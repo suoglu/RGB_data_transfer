@@ -1,3 +1,5 @@
+ // Owner: Onur Calik, edited by Yigit Suoglu
+// Contains code for 8 4 Hamming error correction medhod. Works with boolean values
 #include <iostream>
 #include <string>
 #include "HammingCode.h"
@@ -19,6 +21,7 @@ int main(){
 
 
 void addParity(bool d1, bool d2, bool d3, bool d4, bool d5, bool d6, bool d7, bool d8, bool & p1, bool & p2, bool & p4, bool & p8)
+// Give your data to dx's and give containers for parity bits to px's (referance)
 {
 	
 	p1=d1^d2^d4^d5^d7;
@@ -37,6 +40,7 @@ void addParity(bool d1, bool d2, bool d3, bool d4, bool d5, bool d6, bool d7, bo
 }
 
 void checkParity(bool &d1, bool &d2, bool &d3, bool &d4, bool &d5, bool &d6, bool &d7, bool &d8, bool & p1, bool & p2, bool & p4, bool & p8, bool & err)
+// Give data to dx's and px's (both referance) also returns err for error feedback
 {
 	bool bits[] = {p1,p2,d1,p4,d2,d3,d4,p8,d5,d6,d7,d8};
     
