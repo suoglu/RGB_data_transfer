@@ -9,8 +9,6 @@
 #ifndef encode_decode_h
 #define encode_decode_h
 
-#include <iostream>
-#include <vector>
 
 using namespace std;
 

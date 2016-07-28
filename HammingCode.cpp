@@ -1,7 +1,6 @@
  // Owner: Onur Calik, edited by Yigit Suoglu
 // Contains code for 8 4 Hamming error correction medhod. Works with boolean values
-#include <iostream>
-#include <string>
+
 #include "HammingCode.h"
 
 using namespace std;
