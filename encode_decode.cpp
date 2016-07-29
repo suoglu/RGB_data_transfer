@@ -1,10 +1,5 @@
-//
-//  encode_decode.cpp
-//  testbanch
-//
-//  Created by Yigit Suoglu on 28/07/16.
-//  Copyright © 2016 Yigit Suoglu. All rights reserved.
-//
+ //  Yigit Suoglu Jul 28, 2016
+// Encode and decode ASCII between char and bool array
 
 #include "encode_decode.h"
 
