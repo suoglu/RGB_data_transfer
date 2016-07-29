@@ -1,10 +1,5 @@
-//
-//  encode_decode.h
-//  testbanch
-//
-//  Created by Yigit Suoglu on 28/07/16.
-//  Copyright © 2016 Yigit Suoglu. All rights reserved.
-//
+ //  Yigit Suoglu Jul 28, 2016
+// Headers for same named cpp file 
 
 #ifndef encode_decode_h
 #define encode_decode_h
