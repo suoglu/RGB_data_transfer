@@ -4,8 +4,18 @@
 #include "encode_decode.h"
 
 
-void encodeASCII(char in, bool out[8])
+void encodeASCII(char in, bool out0, bool out1, bool out2, bool out3, bool out4, bool out5, bool out6, bool out7)
 {
+   bool out[8];
+   out[0] = out0;
+   out[1] = out1;
+   out[2] = out2;
+   out[3] = out3;
+   out[4] = out4;
+   out[5] = out5;
+   out[6] = out6;
+   out[7] = out7;
+   
     for(int j = 0; j < 8; j++)
         out[j] = 0;
     
