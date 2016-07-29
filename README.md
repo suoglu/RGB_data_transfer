@@ -34,6 +34,7 @@ This module requires the following equipments:
  * Arduino Board x2
  * Jumpers
  * RGB LEDs (power LEDs are highly recommended) x2
+ * RGB light sensor (TCS34725) x2
  * Tape
  * Breadboard x2
  
@@ -59,12 +60,15 @@ RECOMMENDED MODULES
 INSTALLATION
 ------------
  
- * Install as you would normally install a contributed Drupal module. See:
-   https://drupal.org/documentation/install/modules-themes/modules-7
-   for further information.
+ * 
+ 
+* Connect the power LEDs to corresponding pins (red, green and blue to pin 2, 4 and 7 respectively) on the Arduino Board and to ground. Also, the color sensor (TCS34725) should be connected as specified here (https://cdn-shop.adafruit.com/datasheets/TCS34725.pdf). You should disable the LEDs on the light sensor by grounding the LED pin.
+ 
+* First step should be done with the other Arduino.
+ 
+* After connecting the Arduino Boards to two seperate PCs and power supplies, ... should be uploaded to the Arduino Boards.
 
- * You may want to disable Toolbar module, since its output clashes with
-   Administration Menu.
+* Text can be written into the console by opening the serial monitor
  
 
 
@@ -72,6 +76,8 @@ INSTALLATION
 
 CONFIGURATION
 -------------
+ 
+ 
  
  * Configure user permissions in Administration » People » Permissions:
 
@@ -115,12 +121,10 @@ TROUBLESHOOTING
 FAQ
 ---
 
-Q: I enabled "Aggregate and compress CSS files", but admin_menu.css is still
-   there. Is this normal?
+Q: I want to disable the LED on the sensor. Is there way to do this?
 
-A: Yes, this is the intended behavior. the administration menu module only loads
-   its stylesheet as needed (i.e., on page requests by logged-on, administrative
-   users).
+A: Yes, this is possible. Simply by connecting the "LED" pin to ground will short-circuit it. 
+
 
 
 
