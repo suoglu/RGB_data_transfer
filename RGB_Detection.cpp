@@ -1,7 +1,7 @@
  // Yigit Suoglu Jul 29, 2016
 // includes code detects from given threshold values and enviorement RGB values
 
-#include "RGB_ Detection.h"
+#include "RGB_Detection.h"
 
 void detect_rgb(uint16_t r, uint16_t g, uint16_t b, colorBit th_Val[8], bool & r_on, bool & g_on, bool & b_on)
 {
