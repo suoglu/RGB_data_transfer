@@ -49,6 +49,15 @@ void encodeASCII(char in, bool & out0, bool & out1, bool & out2, bool & out3, bo
 char decodeASCII(bool in0, bool in1, bool in2, bool in3, bool in4, bool in5, bool in6, bool in7)
 {
     
+    bool in[8];
+    in[0] = in0;
+    in[1] = in1;
+    in[2] = in2;
+    in[3] = in3;
+    in[4] = in4;
+    in[5] = in5;
+    in[6] = in6;
+    in[7] = in7;
     
     int out = 0;
     for(int j = 1; j < 8; j++)
