@@ -6,12 +6,15 @@
 #include <HammingCode.h>
 #include <Adafruit_TCS34725.h>
 #include <Wire.h>
-#include <encode_decode.h>
-#include <RGB_ Detection.h>
+#include <RGB_Detection.h>
 
+#define greenLED 12 //bacon
+#define blueLED 13 //acknowledgement
 #define thErrON 0.9
 #define thErrOFF 1.3
 #define setupWaitTime 10 //(ms)
+#define fbTime 1000
+#define cycTime 1000
 Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_2_4MS, TCS34725_GAIN_4X);
 
 
@@ -139,10 +142,12 @@ void setup()
   th_Val[7].g_t = (g * thErrON);
   th_Val[7].b_t = (b * thErrON); 
   Serial.println("Done");
-}
-
-void loop() {
- /* Serial.println("Starting Print");
+  pinMode(greenLED, OUTPUT);
+  pinMode(blueLED, OUTPUT); 
+  digitalWrite(greenLED, LOW);
+  digitalWrite(blueLED, LOW);
+  digitalWrite(greenLED, LOW);
+  
   for(int j = 0; j < 8; j++)
   {
     Serial.print("Env ");
@@ -153,6 +158,54 @@ void loop() {
     Serial.print(th_Val[j].g_t);
     Serial.print(" B: ");
     Serial.println(th_Val[j].b_t);
-  } */ //for testing
+  }
+  Serial.println("Starting...");
+}
 
+void loop() 
+{
+  bool err = 0;
+  digitalWrite(greenLED, HIGH);
+  delay(fbTime);
+  digitalWrite(greenLED, LOW);
+  delay(cycTime);
+  
+  tcs.getRawData(&r, &g, &b, &c);
+
+  detect_rgb(r, g, b, th_Val, buff[0], buff[1], buff[2]);
+
+  digitalWrite(blueLED, HIGH);
+  delay(fbTime);
+  digitalWrite(blueLED, LOW);
+  delay(cycTime);
+
+  tcs.getRawData(&r, &g, &b, &c);
+
+  detect_rgb(r, g, b, th_Val, buff[3], buff[4], buff[5]);
+
+  digitalWrite(blueLED, HIGH);
+  delay(fbTime);
+  digitalWrite(blueLED, LOW);
+  delay(cycTime);
+
+  tcs.getRawData(&r, &g, &b, &c);
+
+  detect_rgb(r, g, b, th_Val, buff[6], buff[7], buff[8]);
+
+  digitalWrite(blueLED, HIGH);
+  delay(fbTime);
+  digitalWrite(blueLED, LOW);
+  delay(cycTime);
+
+    tcs.getRawData(&r, &g, &b, &c);
+
+  detect_rgb(r, g, b, th_Val, buff[9], buff[10], buff[11]);
+
+  checkParity(buff[2], buff[4], buff[5], buff[6], buff[8], buff[9], buff[10], buff[11], buff[0], buff[1], buff[3], buff[7], err);
+  
+  ch = decodeASCII(buff[2], buff[4], buff[5], buff[6], buff[8], buff[9], buff[10], buff[11]);
+  
+  if(ch != NULL)
+    Serial.print(ch);  
+  
 }
