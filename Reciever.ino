@@ -13,8 +13,8 @@
 #define thErrON 0.9
 #define thErrOFF 1.3
 #define setupWaitTime 10 //(ms)
-#define fbTime 1000
-#define cycTime 1000
+#define fbTime 1000 // feedback led high time
+#define cycTime 1000 // feedback led low time
 Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_2_4MS, TCS34725_GAIN_4X);
 
 
