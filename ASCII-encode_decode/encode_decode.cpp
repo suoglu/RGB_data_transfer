@@ -6,9 +6,12 @@
 
 void encodeASCII(char in, bool & out0, bool & out1, bool & out2, bool & out3, bool & out4, bool & out5, bool & out6, bool & out7)
 {
-   bool out[8];
-    for(int j = 0; j < 8; j++)
-        out[j] = 0;
+   out0=0;
+   out0=0;
+   out0=0;
+   out0=0;
+   out0=0;
+   out0=0;
     
    // int in = inC;
     out[0] = 0;
