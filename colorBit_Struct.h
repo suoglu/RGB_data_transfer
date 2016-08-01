@@ -4,9 +4,9 @@
 #ifndef colorBit_Struct_h
 #define colorBit_Struct_h
 
-/*typedef*/ struct colorBit{
-    bool bits[3]; //Signal code (RGB)
-    uint16_t r_t, g_t, b_t; //R G B threshold values
+typedef struct colorBit{
+    bool bits[3];
+    float r_t, g_t, b_t;
 };
 
 #endif /* colorBit_Struct_h */
