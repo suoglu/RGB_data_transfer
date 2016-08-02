@@ -12,7 +12,7 @@
 #define greenLED 3 //bacon & green led port
 #define blueLED 4 //acknowledgement & blue led port
 #define thErrON 0.9 //threshold multipler HIGH leds
-#define thErrOFF 1.3 //threshold multipler LOW leds
+#define thErrOFF 2 //threshold multipler LOW leds
 #define setupWaitTime 1 //(ms) delay at setup time 
 #define fbTime 1000 //(ms) feedback led on time
 #define cycTime 1000 //(ms) feedback led off time
@@ -415,7 +415,7 @@ void synchronization()
     delay(initDelay);
     
     digitalWrite(redLED, HIGH);
-    digitalWrite(g, HIGH);
+    digitalWrite(greenLED, HIGH);
     digitalWrite(blueLED, HIGH);
     delay(initDelay);
     digitalWrite(redLED, LOW);
