@@ -20,7 +20,7 @@
 #define recal "MODE_recal" // keyword for start sync seq (receiver side)
 #define partyM "MODE_party" // keyword for party mode (eastern egg)
 #define crdM "MODE_credits" // keyword to show contributors
-#define initDelay 500 //(ms) synchronization sequence delay
+#define initDelay 200 //(ms) synchronization sequence delay
 #define redONtime 5 //(ms) 
 #define redOFFtime 5 //(ms)
 #define trnsDELAY 0 //(ms)
@@ -267,17 +267,14 @@ loopSTART:
 
   detect_rgb(r, g, b, th_Val, buff[9], buff[10], buff[11]);
 
-  digitalWrite(redLED, HIGH);
-  delay(redONtime);
-  digitalWrite(redLED, LOW);
-  delay(redOFFtime);
-
   checkParity(buff[2], buff[4], buff[5], buff[6], buff[8], buff[9], buff[10], buff[11], buff[0], buff[1], buff[3], buff[7], err);
   
   ch = decodeASCII(buff[2], buff[4], buff[5], buff[6], buff[8], buff[9], buff[10], buff[11]);
   
   if(ch != NULL)
   {
+    digitalWrite(redLED, HIGH);
+    delay(redONtime);
     Serial.print(ch);
      writtenCH++;
      if(writtenCH == 80)
@@ -285,6 +282,8 @@ loopSTART:
        Serial.print("\n");
        writtenCH = 0;
      }
+     digitalWrite(redLED, LOW);
+     delay(redOFFtime);
      goto loopSTART;
   }
 
