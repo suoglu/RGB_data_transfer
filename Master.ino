@@ -12,8 +12,8 @@
 #define greenLED 3 //bacon & green led port
 #define blueLED 4 //acknowledgement & blue led port
 #define thErrON 0.9 //threshold multipler HIGH leds
-#define thErrOFF 2 //threshold multipler LOW leds
-#define setupWaitTime 0 //(ms) delay at setup time 
+#define thErrOFF 1.3 //threshold multipler LOW leds
+#define setupWaitTime 1 //(ms) delay at setup time 
 #define fbTime 1000 //(ms) feedback led on time
 #define cycTime 1000 //(ms) feedback led off time
 #define sync "MODE_sync" // keyword for start sync seq (transmitter side)
@@ -21,6 +21,9 @@
 #define partyM "MODE_party" // keyword for party mode (eastern egg)
 #define crdM "MODE_credits" // keyword to show contributors
 #define initDelay 500 //(ms) synchronization sequence delay
+#define redONtime 5 //(ms) 
+#define redOFFtime 5 //(ms)
+#define trnsDELAY 0 //(ms)
 
 void flashDotOrDash(int color, bool dotOrDash);
 void synchronization();
@@ -83,9 +86,9 @@ void setup()
     }
   Serial.print("Getting enviroment values"); //get env
   tcs.getRawData(&r, &g, &b, &c); //store environment values
-  th_Val[0].r_t = (r * thErrOFF);
-  th_Val[0].g_t = (g * thErrOFF);
-  th_Val[0].b_t = (b * thErrOFF);
+  th_Val[0].r_t = ((float) r * thErrOFF);
+  th_Val[0].g_t = ((float) g * thErrOFF);
+  th_Val[0].b_t = ((float) b * thErrOFF);
   Serial.print("\nWaiting for threshold sequence or type ");
   Serial.print(sync);
   Serial.println(" to send threshold sequence");
@@ -101,7 +104,6 @@ void setup()
        }
   }
   tcs.getRawData(&r, &g, &b, &c); //get env info
-  Serial.print(".");
   //R00
   if(r < th_Val[0].r_t) //go back if red is lower then OFF threshold
   {
@@ -111,9 +113,9 @@ void setup()
   Serial.print("Getting threshold values");
   Serial.print(".");
   //set threshold for red HIGH
-  th_Val[1].r_t = (r * thErrON); 
-  th_Val[1].g_t = (g * thErrOFF);
-  th_Val[1].b_t = (b * thErrOFF);
+  th_Val[1].r_t = ((float) r * thErrON); 
+  th_Val[1].g_t = ((float) g * thErrOFF);
+  th_Val[1].b_t = ((float) b * thErrOFF);
   while(r > th_Val[0].r_t) //wait until red is LOW
   {
     tcs.getRawData(&r, &g, &b, &c); //get env info
@@ -126,9 +128,9 @@ void setup()
   } 
   delay(setupWaitTime);
   //set threshold for green high
-  th_Val[2].r_t = (r * thErrOFF); 
-  th_Val[2].g_t = (g * thErrON);
-  th_Val[2].b_t = (b * thErrOFF);
+  th_Val[2].r_t = ((float) r * thErrOFF); 
+  th_Val[2].g_t = ((float) g * thErrON);
+  th_Val[2].b_t = ((float) b * thErrOFF);
   while(g > th_Val[0].g_t) //wait until green is LOW
   {
     tcs.getRawData(&r, &g, &b, &c); 
@@ -141,9 +143,9 @@ void setup()
   }
   delay(setupWaitTime); 
   //set threshold for blue high
-  th_Val[3].r_t = (r * thErrOFF); 
-  th_Val[3].g_t = (g * thErrOFF);
-  th_Val[3].b_t = (b * thErrON);
+  th_Val[3].r_t = ((float) r * thErrOFF); 
+  th_Val[3].g_t = ((float) g * thErrOFF);
+  th_Val[3].b_t = ((float) b * thErrON);
   while(b > th_Val[0].b_t)
   {
     tcs.getRawData(&r, &g, &b, &c); //wait until blue is LOW
@@ -156,9 +158,9 @@ void setup()
   }
   delay(setupWaitTime); 
   //set threshold for red-green high
-  th_Val[4].r_t = (r * thErrON); 
-  th_Val[4].g_t = (g * thErrON);
-  th_Val[4].b_t = (b * thErrOFF);
+  th_Val[4].r_t = ((float) r * thErrON); 
+  th_Val[4].g_t = ((float) g * thErrON);
+  th_Val[4].b_t = ((float) b * thErrOFF);
   while((r > th_Val[0].r_t) | (g > th_Val[0].g_t)) //wait until red and green is LOW
   {
     tcs.getRawData(&r, &g, &b, &c); 
@@ -171,9 +173,9 @@ void setup()
   }
   delay(setupWaitTime); 
   //set threshold for red-blue high
-  th_Val[5].r_t = (r * thErrON); 
-  th_Val[5].g_t = (g * thErrOFF);
-  th_Val[5].b_t = (b * thErrON); 
+  th_Val[5].r_t = ((float) r * thErrON); 
+  th_Val[5].g_t = ((float) g * thErrOFF);
+  th_Val[5].b_t = ((float) b * thErrON); 
   while((r > th_Val[0].r_t) | (b > th_Val[0].b_t)) //wait until red and blue is LOW
   {
     tcs.getRawData(&r, &g, &b, &c); 
@@ -186,9 +188,9 @@ void setup()
   }
   delay(setupWaitTime); 
   //set threshold for green-blue high
-  th_Val[6].r_t = (r * thErrOFF); 
-  th_Val[6].g_t = (g * thErrON);
-  th_Val[6].b_t = (b * thErrON);
+  th_Val[6].r_t = ((float) r * thErrOFF); 
+  th_Val[6].g_t = ((float) g * thErrON);
+  th_Val[6].b_t = ((float) b * thErrON);
   while((g > th_Val[0].g_t) | (b > th_Val[0].b_t)) //wait until green and blue is LOW
   {
     tcs.getRawData(&r, &g, &b, &c); 
@@ -201,13 +203,13 @@ void setup()
   }
   delay(setupWaitTime); 
   //set threshold for red-green-blue high
-  th_Val[7].r_t = (r * thErrON); 
-  th_Val[7].g_t = (g * thErrON);
-  th_Val[7].b_t = (b * thErrON);
-  while((g > th_Val[0].g_t) | (b > th_Val[0].b_t) | (r > th_Val[0].r_t)) //wait until red, green and blue is LOW
+  th_Val[7].r_t = ((float) r * thErrON); 
+  th_Val[7].g_t = ((float) g * thErrON);
+  th_Val[7].b_t = ((float) b * thErrON);
+  while((g > th_Val[0].g_t) | (b > th_Val[0].b_t) | (r > th_Val[0].r_t)) //wait until red, green and blue is HIGH
   {
     tcs.getRawData(&r, &g, &b, &c); 
-  } 
+  }
   Serial.println("Done");
   //print env values
   for(int j = 0; j < 8; j++)
@@ -227,6 +229,8 @@ void setup()
 void loop() 
 {
   bool err = 0;
+loopSTART:
+  //send start bacon
   digitalWrite(greenLED, HIGH);
   delay(fbTime);
   digitalWrite(greenLED, LOW);
@@ -263,6 +267,11 @@ void loop()
 
   detect_rgb(r, g, b, th_Val, buff[9], buff[10], buff[11]);
 
+  digitalWrite(redLED, HIGH);
+  delay(redONtime);
+  digitalWrite(redLED, LOW);
+  delay(redOFFtime);
+
   checkParity(buff[2], buff[4], buff[5], buff[6], buff[8], buff[9], buff[10], buff[11], buff[0], buff[1], buff[3], buff[7], err);
   
   ch = decodeASCII(buff[2], buff[4], buff[5], buff[6], buff[8], buff[9], buff[10], buff[11]);
@@ -276,6 +285,7 @@ void loop()
        Serial.print("\n");
        writtenCH = 0;
      }
+     goto loopSTART;
   }
 
   if (Serial.available() > 0)
@@ -286,15 +296,18 @@ void loop()
       synchronization();
     else
     {
+      //Serial.print("\n");
       for(int j=0; j<inputHOLD.length(); ++j)
         {
-          Serial.print(inputHOLD[j] + ": ");
+          Serial.print(inputHOLD[j]);
           flashSequence(inputHOLD[j]);
         }
+        flashSequence('\n');
+       Serial.print("\n");
     }
-    digitalWrite(r, LOW);
-    digitalWrite(g, LOW);
-    digitalWrite(b, LOW);
+    digitalWrite(redLED, LOW);
+    digitalWrite(greenLED, LOW);
+    digitalWrite(blueLED, LOW);
   }
 }
 
@@ -304,12 +317,16 @@ void flashSequence(char sequence)
   encodeASCII(sequence, buff[2],buff[4],buff[5],buff[6],buff[8],buff[9],buff[10],buff[11]);
   addParity(buff[2],buff[4],buff[5],buff[6],buff[8],buff[9],buff[10],buff[11], buff[0],buff[1],buff[3],buff[7]);
     
-
+  
   Serial.print(sequence); //for testing **********************************************
   Serial.print(": ");
 
   tcs.getRawData(&r, &g, &b, &c); 
   while(g < th_Val[2].g_t)
+  {
+    tcs.getRawData(&r, &g, &b, &c);
+  }
+  while(g > th_Val[0].g_t)
   {
     tcs.getRawData(&r, &g, &b, &c);
   }
@@ -320,11 +337,7 @@ void flashSequence(char sequence)
     if(!first)
     {
       tcs.getRawData(&r, &g, &b, &c); //store environment values
-      while(b < th_Val[3].b_t)
-      {
-        tcs.getRawData(&r, &g, &b, &c); //store environment values
-      }
-      while(b < th_Val[3].b_t)
+      while(b > th_Val[0].b_t)
       {
         tcs.getRawData(&r, &g, &b, &c); //store environment values
       }
@@ -335,15 +348,31 @@ void flashSequence(char sequence)
       flashDotOrDash(redLED, buff[j]);
       j++;
     
-      flashDotOrDash(3, buff[j]);
+      flashDotOrDash(greenLED, buff[j]);
       j++;
 
-      flashDotOrDash(4, buff[j]);
+      flashDotOrDash(blueLED, buff[j]);
       j++;
-      
-    delay(1000);
+      if(j < 12)
+      {
+        while(b < th_Val[3].b_t)
+         {
+            tcs.getRawData(&r, &g, &b, &c); //store environment values
+         }
+      }
+      else
+      {
+        while(r < th_Val[1].r_t)
+         {
+            tcs.getRawData(&r, &g, &b, &c); //store environment values
+         }
+      }
+      flashDotOrDash(redLED, false);
+      flashDotOrDash(blueLED, false);
+      flashDotOrDash(greenLED, false);
+    delay(trnsDELAY);
   }
-  Serial.println();
+  Serial.println(); //for testing **************************************
 
 }
 
@@ -352,34 +381,38 @@ void synchronization()
     digitalWrite(redLED, HIGH);
     delay(initDelay);
     digitalWrite(redLED, LOW);
+    delay(initDelay);
     
     digitalWrite(greenLED, HIGH);
     delay(initDelay);
     digitalWrite(greenLED, LOW);
+    delay(initDelay);
     
     digitalWrite(blueLED, HIGH);
     delay(initDelay);
     digitalWrite(blueLED, LOW);
-    
+    delay(initDelay);
     
     digitalWrite(redLED, HIGH);
     digitalWrite(greenLED, HIGH);
     delay(initDelay);
     digitalWrite(redLED, LOW);
     digitalWrite(greenLED, LOW);
-    
+    delay(initDelay); 
+       
     digitalWrite(redLED, HIGH);
     digitalWrite(blueLED, HIGH);
     delay(initDelay);
     digitalWrite(redLED, LOW);
     digitalWrite(blueLED, LOW);
-    
+    delay(initDelay); 
+       
     digitalWrite(greenLED, HIGH);
     digitalWrite(blueLED, HIGH);
     delay(initDelay);
     digitalWrite(greenLED, LOW);
     digitalWrite(blueLED, LOW);
-    
+    delay(initDelay);
     
     digitalWrite(redLED, HIGH);
     digitalWrite(g, HIGH);
@@ -387,9 +420,7 @@ void synchronization()
     delay(initDelay);
     digitalWrite(redLED, LOW);
     digitalWrite(greenLED, LOW);
-    digitalWrite(blueLED, LOW);
-    delay(initDelay);
-    
+    digitalWrite(blueLED, LOW);   
 }
 
 void flashDotOrDash(int color, bool dotOrDash)
