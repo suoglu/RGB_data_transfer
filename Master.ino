@@ -12,8 +12,8 @@
 #define greenLED 3 //bacon & green led port
 #define blueLED 4 //acknowledgement & blue led port
 #define thErrON 0.9 //threshold multipler HIGH leds
-#define thErrOFF 2 //threshold multipler LOW leds
-#define setupWaitTime 1 //(ms) delay at setup time 
+#define thErrOFF 1.5 //threshold multipler LOW leds
+#define setupWaitTime 50 //(ms) delay at setup time 
 #define fbTime 1000 //(ms) feedback led on time
 #define cycTime 1000 //(ms) feedback led off time
 #define sync "MODE_sync" // keyword for start sync seq (transmitter side)
@@ -229,63 +229,69 @@ void setup()
 void loop() 
 {
   bool err = 0;
-loopSTART:
-  //send start bacon
-  digitalWrite(greenLED, HIGH);
-  delay(fbTime);
-  digitalWrite(greenLED, LOW);
-  delay(cycTime);
-  
   tcs.getRawData(&r, &g, &b, &c);
-
-  detect_rgb(r, g, b, th_Val, buff[0], buff[1], buff[2]);
-
-  digitalWrite(blueLED, HIGH);
-  delay(fbTime);
-  digitalWrite(blueLED, LOW);
-  delay(cycTime);
-
-  tcs.getRawData(&r, &g, &b, &c);
-
-  detect_rgb(r, g, b, th_Val, buff[3], buff[4], buff[5]);
-
-  digitalWrite(blueLED, HIGH);
-  delay(fbTime);
-  digitalWrite(blueLED, LOW);
-  delay(cycTime);
-
-  tcs.getRawData(&r, &g, &b, &c);
-
-  detect_rgb(r, g, b, th_Val, buff[6], buff[7], buff[8]);
-
-  digitalWrite(blueLED, HIGH);
-  delay(fbTime);
-  digitalWrite(blueLED, LOW);
-  delay(cycTime);
-
-    tcs.getRawData(&r, &g, &b, &c);
-
-  detect_rgb(r, g, b, th_Val, buff[9], buff[10], buff[11]);
-
-  checkParity(buff[2], buff[4], buff[5], buff[6], buff[8], buff[9], buff[10], buff[11], buff[0], buff[1], buff[3], buff[7], err);
-  
-  ch = decodeASCII(buff[2], buff[4], buff[5], buff[6], buff[8], buff[9], buff[10], buff[11]);
-  
-  if(ch != NULL)
+  if(g > th_Val[2].g_t)
   {
-    digitalWrite(redLED, HIGH);
-    delay(redONtime);
-    Serial.print(ch);
-     writtenCH++;
-     if(writtenCH == 80)
+   lisSTART:
+     //send start bacon
+     digitalWrite(greenLED, HIGH);
+     delay(fbTime);
+     digitalWrite(greenLED, LOW);
+     delay(cycTime);
+  
+     tcs.getRawData(&r, &g, &b, &c);
+
+     detect_rgb(r, g, b, th_Val, buff[0], buff[1], buff[2]);
+
+     digitalWrite(blueLED, HIGH);
+     delay(fbTime);
+     digitalWrite(blueLED, LOW);
+     delay(cycTime);
+
+     tcs.getRawData(&r, &g, &b, &c);
+
+     detect_rgb(r, g, b, th_Val, buff[3], buff[4], buff[5]);
+
+     digitalWrite(blueLED, HIGH);
+     delay(fbTime);
+     digitalWrite(blueLED, LOW);
+     delay(cycTime);
+
+     tcs.getRawData(&r, &g, &b, &c);
+
+     detect_rgb(r, g, b, th_Val, buff[6], buff[7], buff[8]);
+
+     digitalWrite(blueLED, HIGH);
+     delay(fbTime);
+     digitalWrite(blueLED, LOW);
+     delay(cycTime);
+
+     tcs.getRawData(&r, &g, &b, &c);
+
+   detect_rgb(r, g, b, th_Val, buff[9], buff[10], buff[11]);
+
+    checkParity(buff[2], buff[4], buff[5], buff[6], buff[8], buff[9], buff[10], buff[11], buff[0], buff[1], buff[3], buff[7], err);
+   
+   ch = decodeASCII(buff[2], buff[4], buff[5], buff[6], buff[8], buff[9], buff[10], buff[11]);
+  
+    if(ch != NULL)
      {
-       Serial.print("\n");
-       writtenCH = 0;
-     }
-     digitalWrite(redLED, LOW);
-     delay(redOFFtime);
-     goto loopSTART;
+      digitalWrite(redLED, HIGH);
+      delay(redONtime);
+      Serial.print(ch);
+      writtenCH++;
+      if(writtenCH == 80)
+       {
+          Serial.print("\n");
+          writtenCH = 0;
+       }
+       digitalWrite(redLED, LOW);
+       delay(redOFFtime);
+       goto lisSTART;
+      }
   }
+  
+
 
   if (Serial.available() > 0)
   {
@@ -295,6 +301,8 @@ loopSTART:
       synchronization();
     else
     {
+      digitalWrite(greenLED, HIGH);
+
       //Serial.print("\n");
       for(int j=0; j<inputHOLD.length(); ++j)
         {
@@ -325,6 +333,8 @@ void flashSequence(char sequence)
   {
     tcs.getRawData(&r, &g, &b, &c);
   }
+  digitalWrite(greenLED, LOW);
+
   while(g > th_Val[0].g_t)
   {
     tcs.getRawData(&r, &g, &b, &c);
