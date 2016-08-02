@@ -13,16 +13,16 @@
 #define blueLED 4 //acknowledgement & blue led port
 #define thErrON 0.9 //threshold multipler HIGH leds
 #define thErrOFF 1.5 //threshold multipler LOW leds
-#define setupWaitTime 50 //(ms) delay at setup time 
-#define fbTime 1000 //(ms) feedback led on time
-#define cycTime 1000 //(ms) feedback led off time
+#define setupWaitTime 0 //(ms) delay at setup time 
+#define fbTime 250 //(ms) feedback led on time
+#define cycTime 250 //(ms) feedback led off time
 #define sync "MODE_sync" // keyword for start sync seq (transmitter side)
 #define recal "MODE_recal" // keyword for start sync seq (receiver side)
 #define partyM "MODE_party" // keyword for party mode (eastern egg)
 #define crdM "MODE_credits" // keyword to show contributors
 #define initDelay 200 //(ms) synchronization sequence delay
-#define redONtime 5 //(ms) 
-#define redOFFtime 5 //(ms)
+#define redONtime 20 //(ms) 
+#define redOFFtime 20 //(ms)
 #define trnsDELAY 0 //(ms)
 
 void flashDotOrDash(int color, bool dotOrDash);
@@ -232,7 +232,7 @@ void loop()
   tcs.getRawData(&r, &g, &b, &c);
   if(g > th_Val[2].g_t)
   {
-   lisSTART:
+    listenSTR:
      //send start bacon
      digitalWrite(greenLED, HIGH);
      delay(fbTime);
@@ -287,7 +287,8 @@ void loop()
        }
        digitalWrite(redLED, LOW);
        delay(redOFFtime);
-       goto lisSTART;
+       if(ch != '\n')
+           goto listenSTR;
       }
   }
   
@@ -306,7 +307,6 @@ void loop()
       //Serial.print("\n");
       for(int j=0; j<inputHOLD.length(); ++j)
         {
-          Serial.print(inputHOLD[j]);
           flashSequence(inputHOLD[j]);
         }
         flashSequence('\n');
@@ -379,7 +379,7 @@ void flashSequence(char sequence)
       flashDotOrDash(redLED, false);
       flashDotOrDash(blueLED, false);
       flashDotOrDash(greenLED, false);
-    delay(trnsDELAY);
+    delay(trnsDELAY);       
   }
   Serial.println(); //for testing **************************************
 
