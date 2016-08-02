@@ -3,7 +3,7 @@
 
 #include "RGB_Detection.h"
 
-void detect_rgb(uint16_t r, uint16_t g, uint16_t b, colorBit th_Val[8], bool & r_on, bool & g_on, bool & b_on)
+void detect_rgb(unsigned short r, unsigned short g, unsigned short b, colorBit th_Val[8], bool & r_on, bool & g_on, bool & b_on)
 {
 	if((r > th_Val[7].r_t) & (g > th_Val[7].g_t) & (b > th_Val[7].b_t)) // RGB HIGH
 	{

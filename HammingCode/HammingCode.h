@@ -1,5 +1,10 @@
-//  Yigit Suoglu Jul 28, 2016
-// Headers for hamming codes written by Onur Calik
+//
+//  HammingCode.h
+//  testbanch
+//
+//  Created by Yigit Suoglu on 28/07/16.
+//  Copyright © 2016 Yigit Suoglu. All rights reserved.
+//
 
 #ifndef HammingCode_h
 #define HammingCode_h

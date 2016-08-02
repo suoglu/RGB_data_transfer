@@ -6,6 +6,6 @@
 
 #include "colorBit_Struct.h"
 
-void detect_rgb(uint16_t r, uint16_t g, uint16_t b, colorBit th_Val[8], bool & r_on, bool & g_on, bool & b_on);
+void detect_rgb(unsigned short r, unsigned short g, unsigned short b, colorBit th_Val[8], bool & r_on, bool & g_on, bool & b_on);
 
 #endif /* RGB_Detection_h */
