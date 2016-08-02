@@ -14,13 +14,13 @@
 #define thErrON 0.9 //threshold multipler HIGH leds
 #define thErrOFF 1.5 //threshold multipler LOW leds
 #define setupWaitTime 1 //(ms) delay at setup time 
-#define fbTime 250 //(ms) feedback led on time
-#define cycTime 250 //(ms) feedback led off time
+#define fbTime 20 //(ms) feedback led on time
+#define cycTime 20 //(ms) feedback led off time
 #define sync "MODE_sync" // keyword for start sync seq (transmitter side)
 #define recal "MODE_recal" // keyword for start sync seq (receiver side)
-#define partyM "MODE_party" // keyword for party mode (eastern egg)
+#define partyM "MODE_party" // keyword for party mode (easter egg)
 #define crdM "MODE_credits" // keyword to show contributors
-#define initDelay 200 //(ms) synchronization sequence delay
+#define initDelay 30 //(ms) synchronization sequence delay
 #define redONtime 20 //(ms) 
 #define redOFFtime 20 //(ms)
 #define trnsDELAY 0 //(ms)
@@ -84,6 +84,7 @@ void setup()
      Serial.println("Cannot find sensor"); //if fail stuck here
         while (1);
     }
+    
   Serial.print("Getting enviroment values"); //get env
   tcs.getRawData(&r, &g, &b, &c); //store environment values
   th_Val[0].r_t = ((float) r * thErrOFF);
@@ -445,6 +446,294 @@ void loop()
 
     if(inputHOLD == sync)
       synchronization();
+    else if(inputHOLD == recal) //start recalabration seq. wait for synchronization seq.
+    {
+      Serial.print("Getting enviroment values"); //get env
+  tcs.getRawData(&r, &g, &b, &c); //store environment values
+  th_Val[0].r_t = ((float) r * thErrOFF);
+  th_Val[0].g_t = ((float) g * thErrOFF);
+  th_Val[0].b_t = ((float) b * thErrOFF);
+  Serial.print("\nWaiting for threshold sequence or type ");
+  Serial.print(sync);
+  Serial.println(" to send threshold sequence");
+  uint16_t r_h, g_h, b_h;
+  setupMain: //come back here untill sync seq start
+  if (Serial.available() > 0) //if there is an input data
+  {
+    inputHOLD = Serial.readString(); //get input
+
+    if(inputHOLD == sync) //check for sync code
+      {
+        synchronization(); //if true sync
+        goto setupMain; //then go back
+       }
+  }
+  tcs.getRawData(&r, &g, &b, &c); //get env info
+  //R00
+  if(r < th_Val[0].r_t) //go back if red is lower then OFF threshold
+  {
+    goto setupMain;
+  }
+  delay(setupWaitTime);
+  Serial.print("Getting threshold values");
+  Serial.print(".");
+  //set threshold for red HIGH
+  r_h = g_h = b_h = 0;
+  while(true)
+  {
+    tcs.getRawData(&r, &g, &b, &c); //get env info
+    if(r > r_h)
+    {
+      r_h = r;
+      g_h = g;
+      b_h = b;
+    }
+    else
+    {
+      th_Val[1].r_t = ((float) r_h * thErrON); 
+      th_Val[1].g_t = ((float) g_h * thErrOFF);
+      th_Val[1].b_t = ((float) b_h * thErrOFF);
+      break;
+    }
+  }
+  
+  while(r > th_Val[0].r_t) //wait until red is LOW
+  {
+    tcs.getRawData(&r, &g, &b, &c); //get env info
+  }
+  Serial.print(".");
+    //0G0
+   while(g < th_Val[0].g_t)
+  {
+    tcs.getRawData(&r, &g, &b, &c); //wait until green is HIGH
+  } 
+  delay(setupWaitTime);
+  //set threshold for green high
+    r_h = g_h = b_h = 0;
+  while(true)
+  {
+    tcs.getRawData(&r, &g, &b, &c); //get env info
+    if(g > g_h)
+    {
+      r_h = r;
+      g_h = g;
+      b_h = b;
+    }
+    else
+    {
+      th_Val[2].r_t = ((float) r_h * thErrOFF); 
+      th_Val[2].g_t = ((float) g_h * thErrON);
+      th_Val[2].b_t = ((float) b_h * thErrOFF);
+      break;
+    }
+  }
+  while(g > th_Val[0].g_t) //wait until green is LOW
+  {
+    tcs.getRawData(&r, &g, &b, &c); 
+  }
+  Serial.print(".");
+  //00B
+   while(b < th_Val[0].b_t)
+  {
+    tcs.getRawData(&r, &g, &b, &c); //wait until blue is HIGH
+  }
+  delay(setupWaitTime); 
+  //set threshold for blue high
+  r_h = g_h = b_h = 0;
+  while(true)
+  {
+    tcs.getRawData(&r, &g, &b, &c); //get env info
+    if(b > b_h)
+    {
+      r_h = r;
+      g_h = g;
+      b_h = b;
+    }
+    else
+    {
+      th_Val[3].r_t = ((float) r_h * thErrOFF); 
+      th_Val[3].g_t = ((float) g_h * thErrOFF);
+      th_Val[3].b_t = ((float) b_h * thErrON);
+      break;
+    }
+  }
+  while(b > th_Val[0].b_t)
+  {
+    tcs.getRawData(&r, &g, &b, &c); //wait until blue is LOW
+  }
+  Serial.print(".");
+  //RG0
+  while((r < th_Val[0].r_t) | (g < th_Val[0].g_t)) //wait until red and green is HIGH
+  {
+    tcs.getRawData(&r, &g, &b, &c); 
+  }
+  delay(setupWaitTime); 
+  //set threshold for red-green high
+   r_h = g_h = b_h = 0;
+  while(true)
+  {
+    tcs.getRawData(&r, &g, &b, &c); //get env info
+    if(r > r_h)
+    {
+      r_h = r;
+      if(b_h < b)
+      {
+        b_h = b;
+      }
+    }
+    else if(g > g_h)
+    {
+      g_h = g;
+      if(b_h < b)
+      {
+        b_h = b;
+      }
+    }
+    else
+    {
+      th_Val[4].r_t = ((float) r_h * thErrON); 
+      th_Val[4].g_t = ((float) g_h * thErrON);
+      th_Val[4].b_t = ((float) b_h * thErrOFF);
+      break;
+    }
+  }
+  while((r > th_Val[0].r_t) | (g > th_Val[0].g_t)) //wait until red and green is LOW
+  {
+    tcs.getRawData(&r, &g, &b, &c); 
+  }
+  Serial.print(".");
+  //R0B
+  while((r < th_Val[0].r_t) | (b < th_Val[0].b_t)) //wait until red and blue is HIGH
+  {
+    tcs.getRawData(&r, &g, &b, &c); 
+  }
+  delay(setupWaitTime); 
+  //set threshold for red-blue high
+     r_h = g_h = b_h = 0;
+  while(true)
+  {
+    tcs.getRawData(&r, &g, &b, &c); //get env info
+    if(r > r_h)
+    {
+      r_h = r;
+      if(g_h < g)
+      {
+        g_h = g;
+      }
+    }
+    else if(b > b_h)
+    {
+      b_h = b;
+      if(g_h < g)
+      {
+        g_h = g;
+      }
+    }
+    else
+    {
+      th_Val[5].r_t = ((float) r_h * thErrON); 
+       th_Val[5].g_t = ((float) g_h * thErrOFF);
+        th_Val[5].b_t = ((float) b_h * thErrON); 
+      break;
+    }
+  }
+  
+  while((r > th_Val[0].r_t) | (b > th_Val[0].b_t)) //wait until red and blue is LOW
+  {
+    tcs.getRawData(&r, &g, &b, &c); 
+  }
+  Serial.print(".");
+  //0GB
+  while((g < th_Val[0].g_t) | (b < th_Val[0].b_t)) //wait until green and blue is HIGH
+  {
+    tcs.getRawData(&r, &g, &b, &c); 
+  }
+  delay(setupWaitTime); 
+  //set threshold for green-blue high
+     r_h = g_h = b_h = 0;
+  while(true)
+  {
+    tcs.getRawData(&r, &g, &b, &c); //get env info
+    if(b > b_h)
+    {
+      b_h = b;
+      if(r_h < r)
+      {
+        r_h = r;
+      }
+    }
+    else if(g > g_h)
+    {
+      g_h = g;
+      if(r_h < r)
+      {
+        r_h = r;
+      }
+    }
+    else
+    {
+     th_Val[6].r_t = ((float) r_h * thErrOFF); 
+     th_Val[6].g_t = ((float) g_h * thErrON);
+     th_Val[6].b_t = ((float) b_h * thErrON);
+      break;
+    }
+  }
+  while((g > th_Val[0].g_t) | (b > th_Val[0].b_t)) //wait until green and blue is LOW
+  {
+    tcs.getRawData(&r, &g, &b, &c); 
+  }
+  Serial.print("."); 
+    //RGB
+  while((g < th_Val[0].g_t) | (b < th_Val[0].b_t) | (r < th_Val[0].r_t)) //wait until red, green and blue is HIGH
+  {
+    tcs.getRawData(&r, &g, &b, &c); 
+  }
+  delay(setupWaitTime); 
+  //set threshold for red-green-blue high
+     r_h = g_h = b_h = 0;
+  while(true)
+  {
+    tcs.getRawData(&r, &g, &b, &c); //get env info
+    if(r > r_h)
+    {
+      r_h = r;
+    }
+    else if(g > g_h)
+    {
+      g_h = g;
+    }
+    else if (b_h < b)
+      {
+        b_h = b;
+      }
+    else
+    {
+       th_Val[7].r_t = ((float) r_h * thErrON); 
+       th_Val[7].g_t = ((float) g_h * thErrON);
+        th_Val[7].b_t = ((float) b_h * thErrON);
+      break;
+    }
+  }
+
+  while((g > th_Val[0].g_t) | (b > th_Val[0].b_t) | (r > th_Val[0].r_t)) //wait until red, green and blue is HIGH
+  {
+    tcs.getRawData(&r, &g, &b, &c); 
+  }
+  Serial.println("Done");
+  //print env values
+  for(int j = 0; j < 8; j++)
+  {
+    Serial.print("Env ");
+    Serial.print(j);
+    Serial.print(" R: ");
+    Serial.print(th_Val[j].r_t);
+    Serial.print(" G: ");
+    Serial.print(th_Val[j].g_t);
+    Serial.print(" B: ");
+    Serial.println(th_Val[j].b_t);
+  }
+  Serial.println("Ready...");
+    }
     else
     {
       digitalWrite(greenLED, HIGH);
