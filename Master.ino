@@ -390,6 +390,7 @@ void loop()
   tcs.getRawData(&r, &g, &b, &c);
   if (g > th_Val[2].g_t)
   {
+    Serial.print("Received:\n");
 listenSTR:
     //send start bacon
     digitalWrite(greenLED, HIGH);
@@ -782,14 +783,17 @@ setupMain: //come back here untill sync seq start
     else
     {
       digitalWrite(greenLED, HIGH);
-
+      Serial.print("Sent:");
       //Serial.print("\n");
       for (int j = 0; j < inputHOLD.length(); ++j)
       {
+        if ((j % 80) == 0)
+          Serial.print("\n");
+
         flashSequence(inputHOLD[j]);
       }
       flashSequence('\n');
-      Serial.print("\n");
+      //   Serial.print("\n");
     }
     digitalWrite(redLED, LOW);
     digitalWrite(greenLED, LOW);
@@ -805,7 +809,7 @@ void flashSequence(char sequence)
 
 
   Serial.print(sequence); //for testing **********************************************
-  Serial.print(": ");
+  //Serial.print(": ");
 
   tcs.getRawData(&r, &g, &b, &c);
   while (g < th_Val[2].g_t)
@@ -858,10 +862,10 @@ void flashSequence(char sequence)
     flashDotOrDash(redLED, false);
     flashDotOrDash(blueLED, false);
     flashDotOrDash(greenLED, false);
-    Serial.print(" ");
+    // Serial.print(" ");
     delay(trnsDELAY);
   }
-  Serial.println(); //for testing **************************************
+  //Serial.println(); //for testing **************************************
 
 }
 
@@ -914,7 +918,7 @@ void synchronization()
 
 void flashDotOrDash(int color, bool dotOrDash)
 {
-  Serial.print(dotOrDash); //for testing ******************************************
+  // Serial.print(dotOrDash); //for testing ******************************************
   if (dotOrDash)
     digitalWrite(color, HIGH);
   else
