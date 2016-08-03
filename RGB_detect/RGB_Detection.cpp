@@ -28,19 +28,19 @@ void detect_rgb(unsigned short r, unsigned short g, unsigned short b, colorBit t
 		b_on = 0;
 		return;
 	}
-	if(b > th_Val[3].b_t) // B HIGH
+	if((r < th_Val[3].r_t) & (g < th_Val[3].g_t) & (b > th_Val[3].b_t)) // B HIGH
 	{
 		b_on = 1;
 		r_on = g_on = 0;
 		return;
 	}
-	if(g > th_Val[2].g_t) // G HIGH
+	if((r < th_Val[1].r_t) & (g > th_Val[2].g_t) & (b < th_Val[2].b_t)) // G HIGH
 	{
 		r_on = b_on = 0;
 		g_on = 1;
 		return;
 	}
-	if(r > th_Val[1].r_t) //R HIGH
+	if((r > th_Val[1].r_t) & (g < th_Val[1].g_t) & (b < th_Val[1].b_t)) //R HIGH
 	{
 		r_on = 1;
 		g_on = b_on = 0;
