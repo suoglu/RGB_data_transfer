@@ -28,6 +28,7 @@
 void flashDotOrDash(int color, bool dotOrDash);
 void synchronization();
 void flashSequence(char sequence);
+void flashDotOrDash(int color, bool dotOrDash);
 
 Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_2_4MS, TCS34725_GAIN_4X); //for sensor
 
@@ -456,13 +457,7 @@ void loop()
   th_Val[0].r_t = ((float) r * thErrOFF);
   th_Val[0].g_t = ((float) g * thErrOFF);
   th_Val[0].b_t = ((float) b * thErrOFF);
-<<<<<<< Updated upstream
   Serial.print("\nWaiting for threshold sequence");
-=======
-  Serial.print("\nWaiting for threshold sequence or type ");
-  Serial.print(sync);
-  Serial.println(" to send threshold sequence");
->>>>>>> Stashed changes
   uint16_t r_h, g_h, b_h;
   setupMain: //come back here untill sync seq start
   if (Serial.available() > 0) //if there is an input data
@@ -820,10 +815,7 @@ void flashSequence(char sequence)
       flashDotOrDash(redLED, false);
       flashDotOrDash(blueLED, false);
       flashDotOrDash(greenLED, false);
-<<<<<<< Updated upstream
       Serial.print(" ");
-=======
->>>>>>> Stashed changes
     delay(trnsDELAY);       
   }
   Serial.println(); //for testing **************************************
