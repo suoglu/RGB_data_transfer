@@ -1,4 +1,5 @@
-// Yigit Suoglu, Musab Cevik, Onur Calik, Baran Dereli, Ozgun Sensoy Aug 1, 2016
+  // Yigit Suoglu, Musab Cevik, Onur Calik, Baran Dereli, Ozgun Sensoy Aug 3, 2016
+ // version 1.0.0
 // All codes combined
 
 #include <colorBit_Struct.h>
