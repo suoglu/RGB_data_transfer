@@ -14,8 +14,8 @@
 #define thErrON 0.9 //threshold multipler HIGH leds
 #define thErrOFF 1.5 //threshold multipler LOW leds
 #define setupWaitTime 1 //(ms) delay at setup time 
-#define fbTime 30 //(ms) feedback led on time
-#define cycTime 30 //(ms) feedback led off time
+#define fbTime 25 //(ms) feedback led on time
+#define cycTime 25 //(ms) feedback led off time
 #define sync "MODE_sync" // keyword for start sync seq (transmitter side)
 #define recal "MODE_recal" // keyword for start sync seq (receiver side)
 #define partyM "MODE_party" // keyword for party mode (easter egg)
@@ -104,6 +104,37 @@ setupMain: //come back here untill sync seq start
     {
       synchronization(); //if true sync
       goto setupMain; //then go back
+    }
+    else if (inputHOLD == crdM)
+    {
+      Serial.println("In alphabetic order:\nOnur Calik\nMusab Cevik\nBaran Dereli\nOzgun Sensoy\nYigit Suoglu");
+      goto setupMain; //then go back
+    }
+    else if (inputHOLD == ledContol)
+    {
+      Serial.print("Enter led code: ");
+      while (true)
+      {
+        if (Serial.available() > 0)
+        {
+          inputHOLD = Serial.readString();
+          if (inputHOLD == "quit")
+          {
+            digitalWrite(redLED, LOW);
+            digitalWrite(greenLED, LOW);
+            digitalWrite(blueLED, LOW);
+            break;
+          }
+          short j = (int) inputHOLD[0] - 48;
+          ledControl(j);
+        }
+      }
+      goto setupMain; //then go back
+    }
+    else if (inputHOLD == partyM)
+    {
+      randomLed();
+
     }
   }
   tcs.getRawData(&r, &g, &b, &c); //get env info
@@ -989,7 +1020,7 @@ void randomLed()
     if (Serial.available() > 0)
     {
       inputHOLD = Serial.readString();
-      if (inputHOLD == "Quit")
+      if (inputHOLD == "quit")
         break;
       else
       {
