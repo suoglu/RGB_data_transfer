@@ -14,18 +14,19 @@
 #define thErrON 0.9 //threshold multipler HIGH leds
 #define thErrOFF 1.5 //threshold multipler LOW leds
 #define setupWaitTime 1 //(ms) delay at setup time 
-#define fbTime 20 //(ms) feedback led on time
-#define cycTime 20 //(ms) feedback led off time
+#define fbTime 30 //(ms) feedback led on time
+#define cycTime 30 //(ms) feedback led off time
 #define sync "MODE_sync" // keyword for start sync seq (transmitter side)
 #define recal "MODE_recal" // keyword for start sync seq (receiver side)
 #define partyM "MODE_party" // keyword for party mode (easter egg)
 #define crdM "MODE_credits" // keyword to show contributors
+#define ledContol "MODE_ledC" //open led control modes
 #define initDelay 30 //(ms) synchronization sequence delay
 #define redONtime 20 //(ms) 
 #define redOFFtime 20 //(ms)
 #define trnsDELAY 0 //(ms)
-#define ledContol "MODE_ledC" //open led control modes
 
+void randomLed();
 void flashDotOrDash(int color, bool dotOrDash);
 void synchronization();
 void flashSequence(char sequence);
@@ -74,7 +75,7 @@ void setup()
   digitalWrite(blueLED, LOW);
   digitalWrite(redLED, LOW);
   Serial.begin(250000); //start serial at the highest rate
-
+senscheck:
   if (tcs.begin())  //start sensor
   {
     Serial.println("Found sensor");
@@ -82,7 +83,7 @@ void setup()
   else
   {
     Serial.println("Cannot find sensor"); //if fail stuck here
-    while (1);
+    goto senscheck;
   }
 
   Serial.print("Getting enviroment values"); //get env
@@ -210,15 +211,17 @@ setupMain: //come back here untill sync seq start
   while (true)
   {
     tcs.getRawData(&r, &g, &b, &c); //get env info
+    bool rChange = false;
     if (r > r_h)
     {
+      rChange = true;
       r_h = r;
       if (b_h < b)
       {
         b_h = b;
       }
     }
-    else if (g > g_h)
+    if (g > g_h)
     {
       g_h = g;
       if (b_h < b)
@@ -226,7 +229,7 @@ setupMain: //come back here untill sync seq start
         b_h = b;
       }
     }
-    else
+    else if (!rChange)
     {
       th_Val[4].r_t = ((float) r_h * thErrON);
       th_Val[4].g_t = ((float) g_h * thErrON);
@@ -249,16 +252,18 @@ setupMain: //come back here untill sync seq start
   r_h = g_h = b_h = 0;
   while (true)
   {
+    bool rNotChage = true;
     tcs.getRawData(&r, &g, &b, &c); //get env info
     if (r > r_h)
     {
+      rNotChage = false;
       r_h = r;
       if (g_h < g)
       {
         g_h = g;
       }
     }
-    else if (b > b_h)
+    if (b > b_h)
     {
       b_h = b;
       if (g_h < g)
@@ -266,7 +271,7 @@ setupMain: //come back here untill sync seq start
         g_h = g;
       }
     }
-    else
+    else if (rNotChage)
     {
       th_Val[5].r_t = ((float) r_h * thErrON);
       th_Val[5].g_t = ((float) g_h * thErrOFF);
@@ -290,16 +295,18 @@ setupMain: //come back here untill sync seq start
   r_h = g_h = b_h = 0;
   while (true)
   {
+    bool bNotCHANGE = true;
     tcs.getRawData(&r, &g, &b, &c); //get env info
     if (b > b_h)
     {
+      bNotCHANGE = false;
       b_h = b;
       if (r_h < r)
       {
         r_h = r;
       }
     }
-    else if (g > g_h)
+    if (g > g_h)
     {
       g_h = g;
       if (r_h < r)
@@ -307,7 +314,7 @@ setupMain: //come back here untill sync seq start
         r_h = r;
       }
     }
-    else
+    else if (bNotCHANGE)
     {
       th_Val[6].r_t = ((float) r_h * thErrOFF);
       th_Val[6].g_t = ((float) g_h * thErrON);
@@ -330,20 +337,24 @@ setupMain: //come back here untill sync seq start
   r_h = g_h = b_h = 0;
   while (true)
   {
+    bool anyChange = false;
     tcs.getRawData(&r, &g, &b, &c); //get env info
     if (r > r_h)
     {
+      anyChange = true;
       r_h = r;
     }
-    else if (g > g_h)
+    if (g > g_h)
     {
+      anyChange = true;
       g_h = g;
     }
-    else if (b_h < b)
+    if (b_h < b)
     {
+      anyChange = true;
       b_h = b;
     }
-    else
+    if (!anyChange)
     {
       th_Val[7].r_t = ((float) r_h * thErrON);
       th_Val[7].g_t = ((float) g_h * thErrON);
@@ -467,6 +478,10 @@ listenSTR:
           ledControl(j);
         }
       }
+    }
+    else if (inputHOLD == partyM)
+    {
+      randomLed();
     }
     else if (inputHOLD == recal) //start recalabration seq. wait for synchronization seq.
     {
@@ -593,15 +608,17 @@ setupMain: //come back here untill sync seq start
       while (true)
       {
         tcs.getRawData(&r, &g, &b, &c); //get env info
+        bool rChange = false;
         if (r > r_h)
         {
+          rChange = true;
           r_h = r;
           if (b_h < b)
           {
             b_h = b;
           }
         }
-        else if (g > g_h)
+        if (g > g_h)
         {
           g_h = g;
           if (b_h < b)
@@ -609,7 +626,7 @@ setupMain: //come back here untill sync seq start
             b_h = b;
           }
         }
-        else
+        else if (!rChange)
         {
           th_Val[4].r_t = ((float) r_h * thErrON);
           th_Val[4].g_t = ((float) g_h * thErrON);
@@ -632,16 +649,18 @@ setupMain: //come back here untill sync seq start
       r_h = g_h = b_h = 0;
       while (true)
       {
+        bool rNotChage = true;
         tcs.getRawData(&r, &g, &b, &c); //get env info
         if (r > r_h)
         {
+          rNotChage = false;
           r_h = r;
           if (g_h < g)
           {
             g_h = g;
           }
         }
-        else if (b > b_h)
+        if (b > b_h)
         {
           b_h = b;
           if (g_h < g)
@@ -649,7 +668,7 @@ setupMain: //come back here untill sync seq start
             g_h = g;
           }
         }
-        else
+        else if (rNotChage)
         {
           th_Val[5].r_t = ((float) r_h * thErrON);
           th_Val[5].g_t = ((float) g_h * thErrOFF);
@@ -673,16 +692,18 @@ setupMain: //come back here untill sync seq start
       r_h = g_h = b_h = 0;
       while (true)
       {
+        bool bNotCHANGE = true;
         tcs.getRawData(&r, &g, &b, &c); //get env info
         if (b > b_h)
         {
+          bNotCHANGE = false;
           b_h = b;
           if (r_h < r)
           {
             r_h = r;
           }
         }
-        else if (g > g_h)
+        if (g > g_h)
         {
           g_h = g;
           if (r_h < r)
@@ -690,7 +711,7 @@ setupMain: //come back here untill sync seq start
             r_h = r;
           }
         }
-        else
+        else if (bNotCHANGE)
         {
           th_Val[6].r_t = ((float) r_h * thErrOFF);
           th_Val[6].g_t = ((float) g_h * thErrON);
@@ -713,20 +734,24 @@ setupMain: //come back here untill sync seq start
       r_h = g_h = b_h = 0;
       while (true)
       {
+        bool anyChange = false;
         tcs.getRawData(&r, &g, &b, &c); //get env info
         if (r > r_h)
         {
+          anyChange = true;
           r_h = r;
         }
-        else if (g > g_h)
+        if (g > g_h)
         {
+          anyChange = true;
           g_h = g;
         }
-        else if (b_h < b)
+        if (b_h < b)
         {
+          anyChange = true;
           b_h = b;
         }
-        else
+        if (!anyChange)
         {
           th_Val[7].r_t = ((float) r_h * thErrON);
           th_Val[7].g_t = ((float) g_h * thErrON);
@@ -948,5 +973,44 @@ void ledControl(int led)
   }
   else
     Serial.println("Please enter a number between 0 and 7!!");
+}
+
+void randomLed()
+{
+  Serial.println("Party mode ON!!!!!!!!");
+  int readRand;
+  int dly = 50;
+  while (true)
+  {
+    if (Serial.available() > 0)
+    {
+      inputHOLD = Serial.readString();
+      if (inputHOLD == "Quit")
+        break;
+      else
+      {
+        dly = 25 * ((int) inputHOLD[0] - 48);
+        if (dly < 0)
+        {
+          dly = -1 * dly;
+        }
+        if (dly > 500)
+        {
+          Serial.println("Troll was here");
+          dly = 500;
+        }
+        Serial.print("Current delay is ");
+        Serial.println(dly);
+      }
+
+    }
+    readRand = random(8);
+    ledControl(readRand);
+    delay(dly);
+  }
+  digitalWrite(redLED, LOW);
+  digitalWrite(greenLED, LOW);
+  digitalWrite(blueLED, LOW);
+
 }
 
