@@ -446,6 +446,10 @@ void loop()
 
     if(inputHOLD == sync)
       synchronization();
+    else if(inputHOLD == crdM)
+    {
+      Serial.println("In alphabetic order:\nOnur Calik\nMusab Cevik\nBaran Dereli\nOzgun Sensoy\nYigit Suoglu");
+    }
     else if(inputHOLD == recal) //start recalabration seq. wait for synchronization seq.
     {
       Serial.print("Getting enviroment values"); //get env
