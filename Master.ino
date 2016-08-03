@@ -34,8 +34,6 @@ Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_2_4MS, TCS347
 String inputHOLD; //string to hold inputs
 bool buff[12]; //buffer to store recived and to be send packets
 char ch; //store recived char and char to send 
-short writtenCH = 0; //to count chars before new line 
-
 colorBit th_Val[8]; //strore all possible combs
 uint16_t r, g, b, c; //to store env data
 
@@ -374,6 +372,7 @@ void setup()
 
 void loop() 
 {
+  short writtenCH = 0; //to count chars before new line 
   bool err = 0;
   tcs.getRawData(&r, &g, &b, &c);
   if(g > th_Val[2].g_t)
@@ -457,9 +456,7 @@ void loop()
   th_Val[0].r_t = ((float) r * thErrOFF);
   th_Val[0].g_t = ((float) g * thErrOFF);
   th_Val[0].b_t = ((float) b * thErrOFF);
-  Serial.print("\nWaiting for threshold sequence or type ");
-  Serial.print(sync);
-  Serial.println(" to send threshold sequence");
+  Serial.print("\nWaiting for threshold sequence");
   uint16_t r_h, g_h, b_h;
   setupMain: //come back here untill sync seq start
   if (Serial.available() > 0) //if there is an input data
@@ -817,6 +814,7 @@ void flashSequence(char sequence)
       flashDotOrDash(redLED, false);
       flashDotOrDash(blueLED, false);
       flashDotOrDash(greenLED, false);
+      Serial.print(" ");
     delay(trnsDELAY);       
   }
   Serial.println(); //for testing **************************************
