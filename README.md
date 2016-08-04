@@ -74,11 +74,15 @@ CONFIGURATION
 
 Modes and default keywords:
 
-MODE_sync: Sends calibration sequence.
-MODE_recal: Listens for calibration sequence.
-MODE_ledC: Enters LED opening mode. Input decimal equivalent of binary number formed as RGB. Input "quit" for quitting.
-MODE_party: Randomly turns on/off LEDs. Change period with integers from 0 to 9. Input "quit" for quitting.
-MODE_credits: Prints the team members in alphabetical order.
+* MODE_sync: Sends calibration sequence.
+
+* MODE_recal: Listens for calibration sequence.
+
+* MODE_ledC: Enters LED opening mode. Input decimal equivalent of binary number formed as RGB. Input "quit" for quitting.
+
+* MODE_party: Randomly turns on/off LEDs. Change period with integers from 0 to 9. Input "quit" for quitting.
+
+* MODE_credits: Prints the team members in alphabetical order.
 
 
 
