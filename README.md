@@ -10,7 +10,6 @@ CONTENTS OF THIS FILE
    
  * Introduction
  * Requirements
- * Recommended modules
  * Installation
  * Configuration
  * Troubleshooting
@@ -42,33 +41,29 @@ This module requires the following equipments:
 REQUIREMENTS
 ------------
 
-This module requires the following modules:
-
- * Module1 (https://module1.com)
- * 
+* Not very bright environment
+* Undisturbed line of sight between the LEDs and RGB sensor.
  
-RECOMMENDED MODULES
--------------------
-
- * Markdown filter (https://www.drupal.org/project/markdown):
-   When enabled, display of the project's README.md help will be rendered
-   with markdown.
-
-
-
 
 INSTALLATION
 ------------
+* All libraries in the repository should be added to Arduino IDE.
  
- * 
- 
-* Connect the power LEDs to corresponding pins (red, green and blue to pin 2, 4 and 7 respectively) on the Arduino Board and to ground. Also, the color sensor (TCS34725) should be connected as specified here (https://cdn-shop.adafruit.com/datasheets/TCS34725.pdf). You should disable the LEDs on the light sensor by grounding the LED pin.
- 
-* First step should be done with the other Arduino.
- 
-* After connecting the Arduino Boards to two seperate PCs and power supplies, ... should be uploaded to the Arduino Boards.
+* Connect the power LEDs to corresponding pins (default values are 2,3,4 for rgb respectively) on the Arduino Board. Also, the color sensor (TCS34725) should be connected as specified here (https://cdn-shop.adafruit.com/datasheets/TCS34725.pdf). You can disable the LEDs on the light sensor by grounding the LED pin.
 
-* Text can be written into the console by opening the serial monitor
+* Repeat same process to other board.
+
+* Connect the Arduino boards to the computers.
+
+* Upload master.ino using Arduino IDE to the board.
+
+* Open serial monitors.
+
+* Start calibration sequence with reserved word (default is MODE_sync).
+ 
+* Do the same processes for the other board.
+
+* Then enjoy slow chatting by the RGB LEDs with Arduino.
  
 
 
@@ -76,47 +71,27 @@ INSTALLATION
 
 CONFIGURATION
 -------------
- 
- 
- 
- * Configure user permissions in Administration » People » Permissions:
 
-   - Use the administration pages and help (System module)
+Modes and default keywords:
 
-     The top-level administration categories require this permission to be
-     accessible. The administration menu will be empty unless this permission
-     is granted.
-
-   - Access administration menu
-
-     Users in roles with the "Access administration menu" permission will see
-     the administration menu at the top of each page.
-
-   - Display Drupal links
-
-     Users in roles with the "Display drupal links" permission will receive
-     links to drupal.org issue queues for all enabled contributed modules. The
-     issue queue links appear under the administration menu icon.
-
- * Customize the menu settings in Administration » Configuration and modules »
-   Administration » Administration menu.
-
- * To prevent administrative menu items from appearing twice, you may hide the
-   "Management" menu block.
-
-
+MODE_sync: Sends calibration sequence.
+MODE_recal: Listens for calibration sequence.
+MODE_ledC: Enters LED opening mode. Input decimal equivalent of binary number formed as RGB. Input "quit" for quitting.
+MODE_party: Randomly turns on/off LEDs. Change period with integers from 0 to 9. Input "quit" for quitting.
+MODE_credits: Prints the team members in alphabetical order.
 
 
 
 TROUBLESHOOTING
 ---------------
 
- * If the menu does not display, check the following:
+* If any LEDs or sensor does not work check your connections.
 
-   - Are the "Access administration menu" and "Use the administration pages
-     and help" permissions enabled for the appropriate roles?
+* If calibration fails at mid-process, reset the Arduino.
 
-   - Does html.tpl.php of your theme output the $page_bottom variable?
+* If calibration values are not suitable for current environment do recalibration process. 
+
+*  If the system locks in mid-transmission reset transmitting Arduino.
 
 FAQ
 ---
@@ -124,6 +99,16 @@ FAQ
 Q: I want to disable the LED on the sensor. Is there way to do this?
 
 A: Yes, this is possible. Simply by connecting the "LED" pin to ground will short-circuit it. 
+
+Q: What is the bit rate of the system?
+
+A: 40 bits/sec.
+
+Q: Is there any way enchance the bit rate?
+
+A: It is not possible with current hardware without a more complex algorithm.
+
+
 
 
 
