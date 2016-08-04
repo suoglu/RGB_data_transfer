@@ -127,6 +127,7 @@ Current maintainers:
 
 This project has been sponsored by:
  * AirTies Wireless Networks
+ 
       AirTies was established in 2004 by an executive and technical equip who has returned to Turkey from the Silicon Valley with the aim of being the market leaders in Wireless Network Technologies. With its expert R&D team the company designs the hardware and software of their own products. Their products provide wireless high-definition data and media transfer on multiple TVs, notebooks, PC and game consoles. Their product portfolio includes wideband internet devices, local area network products, accesories and set top boxes. In total, AirTies has over 8 million products worldwide. Visit http://www.airties.com.tr for more information.
    
 
