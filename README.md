@@ -57,7 +57,7 @@ INSTALLATION
 
 * Upload master.ino using Arduino IDE to the board.
 
-* Open serial monitors.
+* Open serial monitors and change Baud to 250000.
 
 * Start calibration sequence with reserved word (default is MODE_sync).
  
@@ -95,7 +95,9 @@ TROUBLESHOOTING
 
 * If calibration values are not suitable for current environment do recalibration process. 
 
-*  If the system locks in mid-transmission reset transmitting Arduino.
+* If the system locks in mid-transmission reset transmitting Arduino.
+
+* If nonsense characters show up in serial monitor, ensure that Baud speed is set to 250000 (on the right bottom of the serial monitor).
 
 FAQ
 ---
