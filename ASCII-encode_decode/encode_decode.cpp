@@ -1,4 +1,5 @@
- //  Yigit Suoglu Jul 28, 2016
+  //  Yigit Suoglu Jul 28, 2016 
+ // Edited by Onur Calik
 // Encode and decode ASCII between char and bool array
 
 #include "encode_decode.h"
