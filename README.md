@@ -125,7 +125,7 @@ MAINTAINERS
 -----------
 
 Current maintainers:
- * Yiğit Suoğlu  - https://github.com/suoglu
+ * Yiğit Süoğlu  - https://github.com/suoglu
  * Baran Dereli  - https://github.com/BaranDer
  * Özgün Şensoy  - https://github.com/osensoy
  * Musab Çevik  - https://github.com/musabc
